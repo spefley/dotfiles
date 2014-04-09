@@ -1,19 +1,21 @@
 Dotfiles
 ========
 
-After cloning this repo, run `install.py` to automatically set up the
+After cloning this repo, run `install` to automatically set up the
 development environment. Note that the install script is idempotent - running
 it multiple times has no effect.
 
 To keep submodules up-to-date, you can re-run `git update-submodules` at any
 time.
 
+Dotfiles uses [Dotbot][2] for installation.
+
 ##### Note: You should edit `~/.gitconfig` to include your name and email.
 
 Screenshot
 ----------
 
-![screenshot][2]
+![screenshot][1]
 
 Programs Used
 -------------
@@ -67,8 +69,8 @@ License
 -------
 
 With the exception of the content in directories that contain special
-`LICENSE.md` files, all content is released under the [MIT License][1]. See
+`LICENSE.md` files, all content is released under the MIT License. See
 `LICENSE.md` for details.
 
-[1]: http://anish.mit-license.org/
-[2]: https://github.com/anishathalye/dotfiles/raw/master/misc/screenshots/2013-09-28.png
+[1]: https://github.com/anishathalye/dotfiles/raw/master/misc/screenshots/2014-03-20.png
+[2]: https://github.com/anishathalye/dotbot

@@ -4,6 +4,13 @@ alias ll='ls -l --color=auto'
 alias la='ls -la --color=auto'
 export GREP_OPTIONS="--color"
 
+# Update dotfiles
+function dfu() {
+    (
+        cd ~/.dotfiles && git pullff && ./install -q
+    )
+}
+
 # Use pip without requiring virtualenv
 function syspip() {
     PIP_REQUIRE_VIRTUALENV="" pip "$@"
@@ -14,7 +21,7 @@ alias cdgr='cd "$(git root)"'
 
 # Jump to directory containing file
 function jump() {
-    cd "(dirname ${1})"
+    cd "$(dirname ${1})"
 }
 
 # cd replacement for screen to track cwd (like tmux)
