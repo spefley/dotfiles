@@ -59,9 +59,9 @@ set hidden " allow auto-hiding of edited buffers
 set history=4096 " more history
 " use 2 spaces instead of tabs during formatting
 set expandtab
-set tabstop=4
-set shiftwidth=4
-set softtabstop=4
+set tabstop=2
+set shiftwidth=2
+set softtabstop=2
 " smart case-sensitive search
 set ignorecase
 set smartcase
