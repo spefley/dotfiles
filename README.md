@@ -1,29 +1,24 @@
 Dotfiles
 ========
 
-After cloning this repo, run `install` to automatically set up the
-development environment. Note that the install script is idempotent - running
-it multiple times has no effect.
+After cloning this repo, run `install` to automatically set up the development
+environment. Note that the install script is idempotent - running it multiple
+times has no effect.
 
-To keep submodules up-to-date, you can re-run `git update-submodules` at any
-time.
-
-Dotfiles uses [Dotbot][2] for installation.
-
-##### Note: You should edit `~/.gitconfig` to include your name and email.
+Dotfiles uses [Dotbot][dotbot] for installation.
 
 Screenshot
 ----------
 
-![screenshot][1]
+![screenshot][screenshot]
 
 Programs Used
 -------------
 
 ### Command Line Tools
 
-* `brew` (for mac)
-* `aptitude` (for linux)
+* `brew` (for Mac)
+* `aptitude` (for Linux)
 * `zsh`
 * `tmux`
 * `vim`
@@ -35,16 +30,10 @@ Programs Used
 
 ### Development Software
 
-* `g++` / `build-essential` package
+* `gcc` / `build-essential` package
 * `python3`
 * `sbt`
-* `node`
-* `rbenv`
-
-#### Ruby Gems
-
-* `bundler`
-* `rails`
+* `virtualenv`
 
 Installing Binaries
 -------------------
@@ -68,9 +57,9 @@ You can make local customizations for some programs by editing these files:
 License
 -------
 
-With the exception of the content in directories that contain special
-`LICENSE.md` files, all content is released under the MIT License. See
-`LICENSE.md` for details.
+Copyright (c) 2014 Anish Athalye. Released under the MIT License. See
+[LICENSE.md][license] for details.
 
-[1]: https://github.com/anishathalye/dotfiles/raw/master/misc/screenshots/2014-03-20.png
-[2]: https://github.com/anishathalye/dotbot
+[screenshot]: misc/screenshots/2014-07-13.png
+[dotbot]: https://github.com/anishathalye/dotbot
+[license]: LICENSE.md

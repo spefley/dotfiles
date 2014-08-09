@@ -1,4 +1,5 @@
 # User customizable options
+# PR_ARROW_CHAR="[some character]"
 # RPR_SHOW_USER=(true, false)
 # RPR_SHOW_HOST=(true, false) - show host in rhs prompt
 
@@ -72,20 +73,27 @@ function PR_DIR() {
     echo "%{$fg[green]%}${truncated}%{$fg[orange]%}%B${last}%b%{$reset_color%}"
 }
 
-# The arrow symbol that looks like > that is used in the prompt
-PR_ARROW_CHAR=$(echo '\xe2\x9d\xb1')
+# An exclamation point if the previous command did not complete successfully
+function PR_ERROR() {
+    echo "%(?..%(!.%{$fg[violet]%}.%{$fg[red]%})%B!%b%{$reset_color%} )"
+}
+
+# The arrow symbol that is used in the prompt
+PR_ARROW_CHAR=">"
 
 # The arrow in red (for root) or violet (for regular user)
-PR_ARROW="%(!.%{$fg[red]%}.%{$fg[violet]%})${PR_ARROW_CHAR}%{$reset_color%}"
+function PR_ARROW() {
+    echo "%(!.%{$fg[red]%}.%{$fg[violet]%})${PR_ARROW_CHAR}%{$reset_color%}"
+}
 
 # Build the prompt
-PS1='$(PR_DIR) ${PR_ARROW} ' # space at the end
+PS1='$(PR_DIR) $(PR_ERROR)$(PR_ARROW) ' # space at the end
 
 # Set custom rhs prompt
 # User in red (for root) or violet (for regular user)
 RPR_SHOW_USER=true # Set to false to disable user in rhs prompt
 function RPR_USER() {
-    if $RPR_SHOW_USER; then
+    if [[ "${RPR_SHOW_USER}" == "true" ]]; then
         echo "%(!.%{$fg[red]%}.%{$fg[violet]%})%B%n%b%{$reset_color%}"
     fi
 }
@@ -97,14 +105,14 @@ function RPR_HOST() {
     colors=(yellow pink darkred brown neon teal)
     local index=$(python -c "print(hash('$(hostname)') % ${#colors} + 1)")
     local color=$colors[index]
-    if $RPR_SHOW_HOST; then
+    if [[ "${RPR_SHOW_HOST}" == "true" ]]; then
         echo "%{$fg[$color]%}%m%{$reset_color%}"
     fi
 }
 
 # ' at ' in orange outputted only if both user and host enabled
 function RPR_AT() {
-    if $RPR_SHOW_USER && $RPR_SHOW_HOST; then
+    if [[ "${RPR_SHOW_USER}" == "true" ]] && [[ "${RPR_SHOW_HOST}" == "true" ]]; then
         echo "%{$fg[blue]%} at %{$reset_color%}"
     fi
 }
@@ -119,22 +127,27 @@ function RPR_INFO() {
 # Found at http://blog.joshdick.net/2012/12/30/my_git_prompt_for_zsh.html
 # Adapted from code found at <https://gist.github.com/1712320>.
 
-# Modify the colors and symbols in these variables as desired.
-# GIT_PROMPT_SYMBOL="%{$fg[blue]%}±"
+EN_DASH="\xe2\x80\x93"
 GIT_PROMPT_SYMBOL=""
-GIT_PROMPT_PREFIX="%{$fg[green]%}%B(%b%{$reset_color%}"
-GIT_PROMPT_SUFFIX="%{$fg[green]%}%B)%b%{$reset_color%}"
-GIT_PROMPT_AHEAD="%{$fg[red]%}%B+NUM%b%{$reset_color%}"
-GIT_PROMPT_BEHIND="%{$fg[blue]%}%B-NUM%b%{$reset_color%}"
-LIGHTNING="\xe2\x9a\xa1"
-GIT_PROMPT_MERGING="%{$fg[orange]%}%B${LIGHTNING}%b%{$reset_color%}"
-GIT_PROMPT_UNTRACKED="%{$fg[red]%}%B*%b%{$reset_color%}"
-GIT_PROMPT_MODIFIED="%{$fg[yellow]%}%B*%b%{$reset_color%}"
-GIT_PROMPT_STAGED="%{$fg[green]%}%B*%b%{$reset_color%}"
+GIT_PROMPT_PREFIX="%{$fg[violet]%}%B(%b%{$reset_color%}"
+GIT_PROMPT_SUFFIX="%{$fg[violet]%}%B)%b%{$reset_color%}"
+GIT_PROMPT_AHEAD="%{$fg[teal]%}%B+NUM%b%{$reset_color%}"
+GIT_PROMPT_BEHIND="%{$fg[orange]%}%B-NUM%b%{$reset_color%}"
+GIT_PROMPT_MERGING="%{$fg[cyan]%}%Bx%b%{$reset_color%}"
+GIT_PROMPT_UNTRACKED="%{$fg[red]%}%B$EN_DASH%b%{$reset_color%}"
+GIT_PROMPT_MODIFIED="%{$fg[yellow]%}%B$EN_DASH%b%{$reset_color%}"
+GIT_PROMPT_STAGED="%{$fg[green]%}%B$EN_DASH%b%{$reset_color%}"
+GIT_PROMPT_DETACHED="%{$fg[neon]%}%B!%b%{$reset_color%}"
 
 # Show Git branch/tag, or name-rev if on detached head
 function parse_git_branch() {
     (git symbolic-ref -q HEAD || git name-rev --name-only --no-undefined --always HEAD) 2> /dev/null
+}
+
+function parse_git_detached() {
+    if ! git symbolic-ref HEAD >/dev/null 2>&1; then
+        echo "${GIT_PROMPT_DETACHED}"
+    fi
 }
 
 # Show different symbols as appropriate for various Git repository states
@@ -149,25 +162,36 @@ function parse_git_state() {
 
     local NUM_BEHIND="$(git log --oneline ..@{u} 2> /dev/null | wc -l | tr -d ' ')"
     if [ "$NUM_BEHIND" -gt 0 ]; then
+        if [[ -n $GIT_STATE ]]; then
+            GIT_STATE="$GIT_STATE "
+        fi
     GIT_STATE=$GIT_STATE${GIT_PROMPT_BEHIND//NUM/$NUM_BEHIND}
     fi
 
     local GIT_DIR="$(git rev-parse --git-dir 2> /dev/null)"
     if [ -n $GIT_DIR ] && test -r $GIT_DIR/MERGE_HEAD; then
+        if [[ -n $GIT_STATE ]]; then
+            GIT_STATE="$GIT_STATE "
+        fi
     GIT_STATE=$GIT_STATE$GIT_PROMPT_MERGING
     fi
 
-    if [[ -n $(git ls-files --other --exclude-standard 2> /dev/null) ]]; then
-    GIT_STATE=$GIT_STATE$GIT_PROMPT_UNTRACKED
+    if [[ -n $(git ls-files --other --exclude-standard :/ 2> /dev/null) ]]; then
+    GIT_DIFF=$GIT_PROMPT_UNTRACKED
     fi
 
     if ! git diff --quiet 2> /dev/null; then
-    GIT_STATE=$GIT_STATE$GIT_PROMPT_MODIFIED
+    GIT_DIFF=$GIT_DIFF$GIT_PROMPT_MODIFIED
     fi
 
     if ! git diff --cached --quiet 2> /dev/null; then
-    GIT_STATE=$GIT_STATE$GIT_PROMPT_STAGED
+    GIT_DIFF=$GIT_DIFF$GIT_PROMPT_STAGED
     fi
+
+    if [[ -n $GIT_STATE && -n $GIT_DIFF ]]; then
+        GIT_STATE="$GIT_STATE "
+    fi
+    GIT_STATE="$GIT_STATE$GIT_DIFF"
 
     if [[ -n $GIT_STATE ]]; then
     echo "$GIT_PROMPT_PREFIX$GIT_STATE$GIT_PROMPT_SUFFIX"
@@ -177,7 +201,8 @@ function parse_git_state() {
 # If inside a Git repository, print its branch and state
 function git_prompt_string() {
     local git_where="$(parse_git_branch)"
-    [ -n "$git_where" ] && echo " $GIT_PROMPT_SYMBOL$(parse_git_state)$GIT_PROMPT_PREFIX%{$fg[magenta]%}%B${git_where#(refs/heads/|tags/)}%b$GIT_PROMPT_SUFFIX"
+    local git_detached="$(parse_git_detached)"
+    [ -n "$git_where" ] && echo " $GIT_PROMPT_SYMBOL$(parse_git_state)$GIT_PROMPT_PREFIX%{$fg[magenta]%}%B${git_where#(refs/heads/|tags/)}%b$git_detached$GIT_PROMPT_SUFFIX"
 }
 
 # Set the right-hand prompt
@@ -186,11 +211,11 @@ RPS1='$(RPR_INFO)$(git_prompt_string)'
 # Alternative minimal prompt.
 
 # Alternative prompt.
-ALT_PS1='$(PR_DIR 2) ${PR_ARROW} ' # space at the end
+ALT_PS1='$(PR_DIR 2) $(PR_ARROW) ' # space at the end
 ALT_RPS1=''
 
 # Minimal prompt.
-MIN_PS1='${PR_ARROW} '
+MIN_PS1='$(PR_ARROW) '
 MIN_RPS1=""
 
 # Function to toggle between the main prompt and a minimal prompt.

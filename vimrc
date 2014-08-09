@@ -12,7 +12,13 @@ call pathogen#helptags()
 "------------------
 syntax on " turn on syntax highlighting
 set showmatch " show matching braces when text indicator is over them
-set cursorline " highlight current line
+
+" highlight current line, but only in active window
+augroup CursorLineOnlyInActiveWindow
+    autocmd!
+    autocmd VimEnter,WinEnter,BufWinEnter * setlocal cursorline
+    autocmd WinLeave * setlocal nocursorline
+augroup END
 
 " vim can autodetect this based on $TERM (e.g. 'xterm-256color')
 " but it can be set to force 256 colors
@@ -27,16 +33,16 @@ else
     colorscheme solarized
     " customized colors
     highlight SignColumn ctermbg=234
-    highlight StatusLine cterm=bold ctermfg=245 ctermbg=none
-    highlight StatusLineNC cterm=bold ctermfg=245 ctermbg=none
-    let g:NeatStatusLine_color_normal='ctermfg=64 ctermbg=0 cterm=bold'
-    let g:NeatStatusLine_color_insert='ctermfg=136 ctermbg=0 cterm=bold'
-    let g:NeatStatusLine_color_replace='ctermfg=160 ctermbg=0 cterm=bold'
-    let g:NeatStatusLine_color_visual='ctermfg=33 ctermbg=0 cterm=bold'
-    let g:NeatStatusLine_color_position='ctermfg=245 ctermbg=0 cterm=bold'
-    let g:NeatStatusLine_color_modified='ctermfg=166 ctermbg=0 cterm=bold'
-    let g:NeatStatusLine_color_line='ctermfg=61 ctermbg=0 cterm=bold'
-    let g:NeatStatusLine_color_filetype='ctermfg=37 ctermbg=0 cterm=bold'
+    highlight StatusLine cterm=bold ctermfg=245 ctermbg=235
+    highlight StatusLineNC cterm=bold ctermfg=245 ctermbg=235
+    let g:NeatStatusLine_color_normal='ctermfg=64 ctermbg=235 cterm=bold'
+    let g:NeatStatusLine_color_insert='ctermfg=136 ctermbg=235 cterm=bold'
+    let g:NeatStatusLine_color_replace='ctermfg=160 ctermbg=235 cterm=bold'
+    let g:NeatStatusLine_color_visual='ctermfg=33 ctermbg=235 cterm=bold'
+    let g:NeatStatusLine_color_position='ctermfg=245 ctermbg=235 cterm=bold'
+    let g:NeatStatusLine_color_modified='ctermfg=166 ctermbg=235 cterm=bold'
+    let g:NeatStatusLine_color_line='ctermfg=61 ctermbg=235 cterm=bold'
+    let g:NeatStatusLine_color_filetype='ctermfg=37 ctermbg=235 cterm=bold'
 endif
 
 filetype plugin indent on " enable file type detection
@@ -48,6 +54,8 @@ set autoindent
 set nu " number lines
 set incsearch " incremental search (as string is being typed)
 set hls " highlight search
+exec "set listchars=tab:\uBB\uBB,nbsp:~"
+set list
 set lbr " line break
 set ruler " show current position in file
 set scrolloff=5 " show lines above and below cursor (when possible)
@@ -57,6 +65,9 @@ set timeout timeoutlen=1000 ttimeoutlen=100 " fix slow O inserts
 set autochdir " automatically set current directory to directory of last opened file
 set hidden " allow auto-hiding of edited buffers
 set history=4096 " more history
+set foldmethod=syntax " use syntax to define folds
+" unfold everything by default
+autocmd Syntax * normal zR
 " use 2 spaces instead of tabs during formatting
 set expandtab
 set tabstop=2
@@ -73,11 +84,6 @@ if &term =~ '^screen'
     " tmux knows the extended mouse mode
     set ttymouse=xterm2
 endif
-
-"-------------
-" Disable keys
-"-------------
-cabbrev X echoe "You probably don't want to encrypt this file"<CR>
 
 "---------------------
 " Multipurpose tab key
@@ -105,6 +111,11 @@ nnoremap <Down> :echoe "Use j"<CR>
 " Misc configurations
 "--------------------
 
+" buffer management and navigation
+nnoremap <Leader>n :MBEbn<CR>
+nnoremap <Leader>N :MBEbp<CR>
+nnoremap <Leader>x :MBEbd<CR>
+
 " open new split panes to right and bottom, which feels more natural
 set splitbelow
 set splitright
@@ -117,6 +128,12 @@ nnoremap <C-l> <C-w>l
 
 " tagbar
 nnoremap <C-\> :TagbarToggle<CR>
+
+" gundo
+nnoremap <Leader>u :GundoToggle<CR>
+
+" minibufexpl
+nnoremap <Leader>f :MBEFocus<CR>
 
 "---------------------
 " Local customizations

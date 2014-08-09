@@ -1,5 +1,5 @@
 [submodule "dotbot"]
-	path = dotbot
+	path = .dotbot
 	url = https://github.com/anishathalye/dotbot
 [submodule "vim/bundle/vim-pathogen"]
 	path = vim/bundle/vim-pathogen
@@ -19,7 +19,7 @@
 	ignore = untracked
 [submodule "vim/bundle/vim-markdown"]
 	path = vim/bundle/vim-markdown
-	url = https://github.com/plasticboy/vim-markdown.git
+	url = https://github.com/tpope/vim-markdown
 	ignore = untracked
 [submodule "vim/bundle/vim-git"]
 	path = vim/bundle/vim-git
@@ -49,10 +49,6 @@
 	path = vim/bundle/vim-bundler
 	url = https://github.com/tpope/vim-bundler.git
 	ignore = untracked
-[submodule "vim/bundle/vim-rails"]
-	path = vim/bundle/vim-rails
-	url = https://github.com/tpope/vim-rails.git
-	ignore = untracked
 [submodule "vim/bundle/vim-haml"]
 	path = vim/bundle/vim-haml
 	url = https://github.com/tpope/vim-haml
@@ -77,9 +73,26 @@
 	path = vim/bundle/vim-json
 	url = https://github.com/elzr/vim-json
 	ignore = untracked
-[submodule "misc/solarized-sublimetext2"]
-	path = misc/solarized-sublimetext2
-	url = https://github.com/mybuddymichael/solarized-sublimetext2.git
+[submodule "vim/bundle/webapi-vim"]
+	path = vim/bundle/webapi-vim
+	url = https://github.com/mattn/webapi-vim
+	ignore = untracked
+[submodule "vim/bundle/gist-vim"]
+	path = vim/bundle/gist-vim
+	url = https://github.com/mattn/gist-vim.git
+	ignore = untracked
+[submodule "vim/bundle/gundo.vim"]
+	path = vim/bundle/gundo.vim
+	url = https://github.com/sjl/gundo.vim
+	ignore = untracked
+[submodule "vim/bundle/minibufexpl.vim"]
+	path = vim/bundle/minibufexpl.vim
+	url = https://github.com/fholgado/minibufexpl.vim
+	ignore = untracked
+[submodule "vim/bundle/vim-liquid"]
+	path = vim/bundle/vim-liquid
+	url = https://github.com/tpope/vim-liquid
+	ignore = untracked
 [submodule "zsh/plugins/dircolors-solarized"]
 	path = zsh/plugins/dircolors-solarized
 	url = https://github.com/seebi/dircolors-solarized.git
@@ -89,12 +102,6 @@
 [submodule "zsh/plugins/zsh-syntax-highlighting"]
 	path = zsh/plugins/zsh-syntax-highlighting
 	url = https://github.com/zsh-users/zsh-syntax-highlighting.git
-[submodule "rbenv/plugins/ruby-build"]
-	path = rbenv/plugins/ruby-build
-	url = https://github.com/sstephenson/ruby-build.git
-[submodule "rbenv/plugins/rbenv-gem-rehash"]
-	path = rbenv/plugins/rbenv-gem-rehash
-	url = https://github.com/sstephenson/rbenv-gem-rehash.git
-[submodule "rbenv/plugins/rbenv-bundler"]
-	path = rbenv/plugins/rbenv-bundler
-	url = https://github.com/carsomyr/rbenv-bundler.git
+[submodule "zsh/plugins/zsh-completions"]
+	path = zsh/plugins/zsh-completions
+	url = https://github.com/zsh-users/zsh-completions
